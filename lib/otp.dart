@@ -1,23 +1,39 @@
-// ignore_for_file: prefer_const_constructors, sized_box_for_whitespace, prefer_is_empty
+// ignore_for_file: prefer_const_constructors, sized_box_for_whitespace, prefer_is_empty, prefer_const_constructors_in_immutables, use_key_in_widget_constructors, unused_import, unused_field, avoid_print, unused_element, prefer_final_fields
 
 
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/welcome.dart';
+import 'package:pinput/pinput.dart';
+
 
 class Otp extends StatefulWidget {
-  const Otp({ Key? key }) : super(key: key);
+ final String phone;
+  Otp(this.phone);
+ 
 
   @override
   _OtpState createState() => _OtpState();
 }
 
 class _OtpState extends State<Otp> {
+  final GlobalKey<ScaffoldState> _scaffoldkey = GlobalKey<ScaffoldState>();
+  String _verificationCode = " ";
+  final TextEditingController _pinPutController = TextEditingController();
+  final FocusNode _pinPutFocusNode = FocusNode();
+
+  FirebaseAuth auth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
      return Scaffold( 
       resizeToAvoidBottomInset: false,
       backgroundColor: Color(0xfff7f6fb) ,
-      body: SafeArea(
+      body:
+      
+      
+       SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 24, horizontal: 32),
           child: Column(
@@ -56,6 +72,7 @@ class _OtpState extends State<Otp> {
                 height: 10,
               ),
               Text("Enter the verification code sent to your phone number",
+                
                style: TextStyle(
                  fontWeight: FontWeight.bold,
                   fontSize: 14,
@@ -70,18 +87,22 @@ class _OtpState extends State<Otp> {
                 padding: EdgeInsets.all(28),
                 decoration: BoxDecoration(
                   color: Color(0xfff7f6fb),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(12)
                 ),
                 child: Column(
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                     
                       children: [
+                         
                      _textFieldOTP(first: true, last: false),
                      _textFieldOTP(first: false, last: false),
                      _textFieldOTP(first: false, last: false),
                      _textFieldOTP(first: false, last: true),
+                     
                       ],
+                      
                     ),
                     SizedBox(
                 height: 22,
@@ -91,11 +112,12 @@ class _OtpState extends State<Otp> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.of(context).push(
+                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) =>Otp(),
+                        builder: (context) =>(Welcome()),
                       ),
                     );
+                   
                   },
                   style: ButtonStyle(
                     foregroundColor: 
@@ -158,6 +180,7 @@ class _OtpState extends State<Otp> {
       child: AspectRatio(
         aspectRatio: 0.7,
         child: TextField(
+          
           autofocus: true,
           onChanged: (value){
             if(value.length == 1 && last == false){
@@ -191,6 +214,8 @@ class _OtpState extends State<Otp> {
       ),
     );
   }
+
+ 
 }
 
  

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "460216661368",
+    "project_id": "intelligent-monitoring-system",
+    "storage_bucket": "intelligent-monitoring-system.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:460216661368:android:6f71e7497c5a1cac42848d",
+        "android_client_info": {
+          "package_name": "com.example.flutter_application_1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "460216661368-qbm630bcpni0heji9v8h23h21201mqlf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.flutter_application_1",
+            "certificate_hash": "c929b5e72a95584b2054e9796d4a24bb4cfc3669"
+          }
+        },
+        {
+          "client_id": "460216661368-jrvh8fbgchobgiica21km1b33upggkbb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBFnFUcbTsuowY2v2wJiKg8sThRxCfBze4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "460216661368-jrvh8fbgchobgiica21km1b33upggkbb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
