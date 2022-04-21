@@ -1,29 +1,37 @@
-// ignore_for_file: prefer_const_constructors, prefer_final_fields, unused_import, avoid_print, avoid_web_libraries_in_flutter
+// ignore_for_file: use_key_in_widget_constructors, deprecated_member_use, prefer_const_constructors, prefer_const_literals_to_create_immutables, must_be_immutable, unused_local_variable, avoid_print, unused_import, prefer_final_fields, unnecessary_import
 
-
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/otp.dart';
 import 'package:flutter_application_1/welcome.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-class Register extends StatefulWidget {
-  const Register({Key? key}) : super(key: key);
+import 'package:flutter/cupertino.dart';
+class Signup extends StatefulWidget {
+  const Signup({Key? key}) : super(key: key);
  
   @override
   _RegisterState createState() => _RegisterState();
 }
 
-class _RegisterState extends State<Register> {
+class _RegisterState extends State<Signup> {
    TextEditingController phoneController = TextEditingController();
   TextEditingController otpController = TextEditingController();
 
-  FirebaseAuth auth = FirebaseAuth.instance;
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  void inputData(){
+   final User? user = auth.currentUser;
+   final uid = user?.uid;
+  }
+  
+
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   bool otpVisibility = false;
 
   String verificationID = "";
-
+  var _text = TextEditingController();
+  CollectionReference users = FirebaseFirestore.instance.collection('users');
   // TextEditingController phoneController = TextEditingController();
 
  
@@ -70,7 +78,7 @@ class _RegisterState extends State<Register> {
               SizedBox(
                 height: 10,
               ),
-              Text("Enter your phone number",
+              Text("Enter your information",
                style: TextStyle(
                  fontWeight: FontWeight.bold,
                   fontSize: 14,
@@ -79,7 +87,7 @@ class _RegisterState extends State<Register> {
                 textAlign: TextAlign.center,
               ),
               SizedBox(
-                height: 38,
+                height: 20,
               ),
               Container(
                 padding: EdgeInsets.all(28),
@@ -89,6 +97,32 @@ class _RegisterState extends State<Register> {
                 ),
                 child: Column(
                   children: [
+                    
+                      TextFormField(
+                      
+                      keyboardType: TextInputType.name,
+                      controller: _text,
+                       //
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        
+                      ),
+                      decoration: InputDecoration(
+                        hintText: 'Name',
+                        
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black12),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black12),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                     
+                      ),
+                    ),
+                    SizedBox(height: 18,),
                     TextFormField(
                       
                       keyboardType: TextInputType.number,
@@ -99,9 +133,11 @@ class _RegisterState extends State<Register> {
                         
                       ),
                       decoration: InputDecoration(
+                        
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.black12),
                           borderRadius: BorderRadius.circular(10),
+                          
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.black12),
@@ -151,7 +187,10 @@ class _RegisterState extends State<Register> {
                       
                       onPressed: () {
                         if (otpVisibility) {
+                          
                           verifyOTP();
+                          
+                          //
                         } else {
                            loginWithPhone();
                           }
@@ -160,7 +199,7 @@ class _RegisterState extends State<Register> {
                       
                       child: Text(
 
-                        otpVisibility ? "Verify" : "Login",
+                        otpVisibility ? "Verify" : "Register",
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 20,
@@ -246,8 +285,10 @@ class _RegisterState extends State<Register> {
         verificationId: verificationID, smsCode: otpController.text);
 
     await auth.signInWithCredential(credential).then(
-      (value) {
+      (value) async {
+        FirebaseAuth.instance.currentUser!.updateProfile(displayName:_text.text);
         print("You are logged in successfully");
+        
         Fluttertoast.showToast(
           msg: "You are logged in successfully",
           toastLength: Toast.LENGTH_SHORT,
@@ -257,6 +298,11 @@ class _RegisterState extends State<Register> {
           textColor: Colors.white,
           fontSize: 16.0,
         );
+        User? user = FirebaseAuth.instance.currentUser;
+        await FirebaseFirestore.instance.collection('users').doc(user?.uid).set({
+          'uid': user?.uid,
+          'name':_text.text
+        });
       },
     ).whenComplete(
       () {
@@ -269,5 +315,6 @@ class _RegisterState extends State<Register> {
       },
     );
   }
+  
 }
  

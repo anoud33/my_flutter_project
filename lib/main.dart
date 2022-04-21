@@ -1,7 +1,9 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, unused_import
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/signup.dart';
+
 import 'package:flutter_application_1/welcome.dart';
 import 'welcome.dart';
 void main() async {
@@ -18,7 +20,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'OTP VERIFICATION',
-      home: Welcome(),
+      home: Signup(),
     );
   }
 }
