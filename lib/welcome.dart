@@ -1,9 +1,11 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, unused_import
 
 
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/register.dart';
+import 'package:flutter_application_1/signup.dart';
+import 'package:flutter_application_1/main.dart';
 
 class Welcome extends StatefulWidget {
   const Welcome({Key? key}) : super(key: key);
@@ -56,6 +58,39 @@ class _WelcomeState extends State<Welcome> {
                   onPressed: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
+                        builder: (context) =>Signup(),
+                      ),
+                    );
+                  },
+                  style: ButtonStyle(
+                    foregroundColor: 
+                        MaterialStateProperty.all<Color>(Colors.white),
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.blue),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(14),
+                    child: Text(
+                      'Register',
+                       style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 22,
+              ),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
                         builder: (context) =>Register(),
                       ),
                     );
@@ -74,14 +109,11 @@ class _WelcomeState extends State<Welcome> {
                   child: Padding(
                     padding: EdgeInsets.all(14),
                     child: Text(
-                      'Get Started',
+                      'Login',
                        style: TextStyle(fontSize: 16),
                     ),
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 22,
               ),
             ],
           ),

@@ -1,12 +1,17 @@
-// ignore_for_file: prefer_const_constructors, prefer_final_fields, unused_import, avoid_print, avoid_web_libraries_in_flutter
+// ignore_for_file: prefer_const_constructors, prefer_final_fields, unused_import, avoid_print, avoid_web_libraries_in_flutter, unused_local_variable, await_only_futures
 
 
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/otp.dart';
+import 'package:flutter_application_1/profile1.dart';
 import 'package:flutter_application_1/welcome.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_application_1/main.dart';
+import 'package:flutter_application_1/trial.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Register extends StatefulWidget {
   const Register({Key? key}) : super(key: key);
  
@@ -25,7 +30,7 @@ class _RegisterState extends State<Register> {
   String verificationID = "";
 
   // TextEditingController phoneController = TextEditingController();
-
+  
  
   @override
   Widget build(BuildContext context) {
@@ -61,7 +66,7 @@ class _RegisterState extends State<Register> {
                 height: 18,
               ),
               Text(
-                "Registration",
+                "Login",
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
@@ -247,6 +252,7 @@ class _RegisterState extends State<Register> {
 
     await auth.signInWithCredential(credential).then(
       (value) {
+        storeNewUser(auth.currentUser);
         print("You are logged in successfully");
         Fluttertoast.showToast(
           msg: "You are logged in successfully",
@@ -263,11 +269,25 @@ class _RegisterState extends State<Register> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => Welcome(),
+            builder: (context) => Profile1(),
           ),
         );
       },
     );
   }
+    storeNewUser(user) async {
+     final User? user = auth.currentUser;
+   final uid = user?.uid;
+    var firebaseUser = await user;
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(firebaseUser?.uid)
+        .set({'uid': user?.uid,'name': user?.displayName})
+        .then((value) {})
+        .catchError((e) {
+          print(e);
+        });
+  }
 }
+ 
  

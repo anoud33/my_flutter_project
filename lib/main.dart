@@ -1,7 +1,9 @@
 // ignore_for_file: prefer_const_constructors, unused_import
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/otp.dart';
 import 'package:flutter_application_1/signup.dart';
 
 import 'package:flutter_application_1/welcome.dart';
@@ -20,7 +22,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'OTP VERIFICATION',
-      home: Signup(),
+      home: Welcome(),
     );
   }
 }
