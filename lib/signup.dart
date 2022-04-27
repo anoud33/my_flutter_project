@@ -1,4 +1,4 @@
-// ignore_for_file: use_key_in_widget_constructors, deprecated_member_use, prefer_const_constructors, prefer_const_literals_to_create_immutables, must_be_immutable, unused_local_variable, avoid_print, unused_import, prefer_final_fields, unnecessary_import, unnecessary_null_comparison, await_only_futures
+// ignore_for_file: use_key_in_widget_constructors, deprecated_member_use, prefer_const_constructors, prefer_const_literals_to_create_immutables, must_be_immutable, unused_local_variable, avoid_print, unused_import, prefer_final_fields, unnecessary_import, unnecessary_null_comparison, await_only_futures, non_constant_identifier_names, unused_field
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -33,9 +33,10 @@ class _RegisterState extends State<Signup> {
   bool otpVisibility = false;
 
   String verificationID = "";
-  var _text = TextEditingController();
+  var _FName = TextEditingController();
+  
   CollectionReference users = FirebaseFirestore.instance.collection('users');
-  // TextEditingController phoneController = TextEditingController();
+ 
 
  
   @override
@@ -79,7 +80,7 @@ class _RegisterState extends State<Signup> {
                 ),
               ),
               SizedBox(
-                height: 10,
+                height: 0,
               ),
               Text("Enter your information",
                style: TextStyle(
@@ -90,7 +91,7 @@ class _RegisterState extends State<Signup> {
                 textAlign: TextAlign.center,
               ),
               SizedBox(
-                height: 20,
+                height: 10,
               ),
               Container(
                 padding: EdgeInsets.all(28),
@@ -100,11 +101,11 @@ class _RegisterState extends State<Signup> {
                 ),
                 child: Column(
                   children: [
-                    
+                    // field to enter name
                       TextFormField(
                       
                       keyboardType: TextInputType.name,
-                      controller: _text,
+                      controller: _FName,
                        //
                       style: TextStyle(
                         fontSize: 18,
@@ -112,7 +113,7 @@ class _RegisterState extends State<Signup> {
                         
                       ),
                       decoration: InputDecoration(
-                        hintText: 'Name',
+                        hintText: 'First Name',
                         
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.black12),
@@ -125,7 +126,11 @@ class _RegisterState extends State<Signup> {
                      
                       ),
                     ),
-                    SizedBox(height: 18,),
+                    SizedBox(height: 10,),
+                    
+                  
+                    SizedBox(height: 10,),
+                    //field to enter phone number
                     TextFormField(
                       
                       keyboardType: TextInputType.number,
@@ -136,7 +141,7 @@ class _RegisterState extends State<Signup> {
                         
                       ),
                       decoration: InputDecoration(
-                        
+                        hintText: ' Number',
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.black12),
                           borderRadius: BorderRadius.circular(10),
@@ -160,7 +165,7 @@ class _RegisterState extends State<Signup> {
                          ),
                       ),
                     ),
-                    //
+                    //we used visibility in case number is written only signup button will appear if signup button pressed then otp filed is shown and verify button will show
                     Visibility(
                       child: TextField(
 
@@ -181,7 +186,7 @@ class _RegisterState extends State<Signup> {
                     
                     SizedBox(
 
-                      height: 10,
+                      height: 18,
                     ),
                    
                     MaterialButton(
@@ -199,7 +204,7 @@ class _RegisterState extends State<Signup> {
                           }
                       },
                       
-                      
+                      //verify will appear or register depending
                       child: Text(
 
                         otpVisibility ? "Verify" : "Register",
@@ -213,56 +218,19 @@ class _RegisterState extends State<Signup> {
                       
                     ),
                     
-                    //
-                   // SizedBox(
-                    //  height: 22,
-                    //),
+                    
                   ],
                 ),
               ),
               
-               //  SizedBox(
-               // height: 22,
-              //),
-
-              //SizedBox(
-                //width: double.infinity,
-                //child: ElevatedButton(
-                  //onPressed: () {
-                    //Navigator.of(context).push(
-                      //MaterialPageRoute(
-                        //builder: (context) =>Otp()
-                      //)
-                    //);
-                  //},
-                 // style: ButtonStyle(
-                    //foregroundColor: 
-                      //  MaterialStateProperty.all<Color>(Colors.white),
-                  //  backgroundColor:
-                      //  MaterialStateProperty.all<Color>(Colors.blue),
-                   // shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    //  RoundedRectangleBorder(
-                      //  borderRadius: BorderRadius.circular(24),
-                  //    ),
-                 //   ),
-                //  ),
-                //  child: Padding(
-                 //   padding: EdgeInsets.all(14),
-                 //   child: Text(
-                 //     'Send',
-                 //      style: TextStyle(fontSize: 16),
-                //   ),
-               // ),
-          //    ),
-           //   SizedBox(
-           //     height: 22,
-           //   ),
+              
             ],
           ),
         ),
       ),
     );
   }
+  //check number is true
    void loginWithPhone() async {
     auth.verifyPhoneNumber(
       phoneNumber: "+966" + phoneController.text,
@@ -282,7 +250,7 @@ class _RegisterState extends State<Signup> {
       codeAutoRetrievalTimeout: (String verificationId) {},
     );
   }
-
+// check if otp is correct you will register and information will be stored in firebase
   void verifyOTP() async {
     PhoneAuthCredential credential = PhoneAuthProvider.credential(
         verificationId: verificationID, smsCode: otpController.text);
@@ -292,15 +260,15 @@ class _RegisterState extends State<Signup> {
         
         User? user = FirebaseAuth.instance.currentUser;
         
-        if(user?.uid == null){
-          await FirebaseFirestore.instance.collection('users').doc(user?.uid).set({
+        
+          await FirebaseFirestore.instance.collection('userinfo').doc(user?.uid).set({
           'uid': user?.uid,
-          'name':_text.text 
+          'name':_FName.text, 
            
          
           });
           storeNewUser(auth.currentUser);
-          FirebaseAuth.instance.currentUser!.updateProfile(displayName:_text.text);
+          FirebaseAuth.instance.currentUser!.updateProfile(displayName:_FName.text);
         print("You are logged in successfully");
         
         Fluttertoast.showToast(
@@ -327,33 +295,18 @@ class _RegisterState extends State<Signup> {
             builder: (context) => Profile1(),
           ),
         );
-        }
-        else{
-          Fluttertoast.showToast(
-          msg: "User already exists",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.blue,
-          textColor: Colors.white,
-          fontSize: 16.0,
-        );
-           Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => Register(),
-          ),
-        );
-        }
+        
+        
       },
     );
   }
+  // set info in firebase
      storeNewUser(user) async {
      final User? user = auth.currentUser;
    final uid = user?.uid;
     var firebaseUser = await user;
     FirebaseFirestore.instance
-        .collection('users')
+        .collection('userinfo')
         .doc(firebaseUser?.uid)
         .set({'uid': user?.uid,'name': user?.displayName})
         .then((value) {})

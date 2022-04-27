@@ -32,8 +32,8 @@ class _RegisterState extends State<Profile1> {
   String verificationID = "";
   
   CollectionReference users = FirebaseFirestore.instance.collection('users');
-  // TextEditingController phoneController = TextEditingController();
-  
+ 
+  var _Fname = TextEditingController();
     
   void inputData(){
    final User? user = auth.currentUser;
@@ -44,12 +44,27 @@ class _RegisterState extends State<Profile1> {
   
     
 
-     //FirebaseUser user = await FirebaseAuth.instance.currentUser!();
+
     
-    
-  
+    // function to fetch user name to be viwed.
+  fetch() async {
+  final User? user = auth.currentUser;
+   final uid = user?.uid;
+    final firebaseUser = await user;
+    if (firebaseUser != null)
+      await FirebaseFirestore.instance
+          .collection('userinfo')
+          .doc(firebaseUser.uid)
+          .get()
+          .then((ds) {
+        userName = ds.data()!['name'];
+        print(userName);
+      }).catchError((e) {
+        print(e);
+      });
+  }
    
-    String userName = "";
+      String userName ="" ;
   @override
 
   Widget build(BuildContext context) {
@@ -76,7 +91,24 @@ class _RegisterState extends State<Profile1> {
                     ),
                   ),
                 ),
-              
+                 Align(
+                  alignment: Alignment.topRight,
+                  child: GestureDetector(
+                    // function for logout and go back to first page
+                    onTap:() async{
+                      await auth.signOut().then((result) {
+                      Navigator.of(context).pop(true);
+                      });
+                    },
+                    child: Icon(
+                      Icons.exit_to_app,
+                      color: Colors.grey,
+                      size: 35,
+                      
+                    ),
+                  ),
+                ),
+
                 Image.asset(
                   'images/Ask-the-midwife-logo.png',
                  width:240,
@@ -113,21 +145,11 @@ class _RegisterState extends State<Profile1> {
                     
                   children: [
                     
-                    //   FutureBuilder(
-          //future: fetch(),
-        //  builder: (context, snapshot) {
-         //   if (snapshot.connectionState != ConnectionState.done)
-          //    return Text("Loading data...Please wait");
-           // return Text(" $userName");
-           
-         //},
-          
-       // ),
-                      
+                    // text field to take name as input to update data
                      TextFormField(
                       
                       keyboardType: TextInputType.name,
-                      
+                      controller: _Fname,
                        
                       style: TextStyle(
                         fontSize: 18,
@@ -135,9 +157,10 @@ class _RegisterState extends State<Profile1> {
                         
                       ),
                       decoration: InputDecoration(
-                           
-                              hintText: "$userName",
-                          
+                         
+                          hintText: " $userName",
+                             
+                                
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.black12),
                           borderRadius: BorderRadius.circular(10),
@@ -150,7 +173,36 @@ class _RegisterState extends State<Profile1> {
                      
                       ),
                     ),
-                     
+                      SizedBox(
+                height: 30,
+              ),
+              SizedBox(
+                // button to press when wanting to update name
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    UpdateData();
+                  },
+                  style: ButtonStyle(
+                    foregroundColor: 
+                        MaterialStateProperty.all<Color>(Colors.white),
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.blue),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(14),
+                    child: Text(
+                      'Update Information',
+                       style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                ),
+              ),
                   
                   ],
                 ),
@@ -166,21 +218,29 @@ class _RegisterState extends State<Profile1> {
     
   }
 
-  fetch() async {
+  // function to update user name
+  UpdateData() async {
   final User? user = auth.currentUser;
    final uid = user?.uid;
     final firebaseUser = await user;
-    if (firebaseUser != null)
+       if (firebaseUser != null)
       await FirebaseFirestore.instance
-          .collection('users')
+          .collection('userinfo')
           .doc(firebaseUser.uid)
-          .get()
-          .then((ds) {
-        userName = ds.data()!['name'];
-        print(userName);
-      }).catchError((e) {
-        print(e);
-      });
+         .update({'uid': user?.uid,'name': _Fname.text})
+        .then((value) {})
+        .catchError((e) {
+          print(e);
+        });
+  }
+  // function to signout
+  Future SignOut() async{
+    try{
+      return auth.signOut();
+    } catch(error){
+       print(error.toString());
+       return null;
+    }
   }
 }
   

@@ -9,7 +9,7 @@ import 'package:flutter_application_1/welcome.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_application_1/main.dart';
-import 'package:flutter_application_1/trial.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Register extends StatefulWidget {
@@ -29,7 +29,7 @@ class _RegisterState extends State<Register> {
 
   String verificationID = "";
 
-  // TextEditingController phoneController = TextEditingController();
+ 
   
  
   @override
@@ -126,7 +126,7 @@ class _RegisterState extends State<Register> {
                          ),
                       ),
                     ),
-                    //
+                    //visibility in case login will show or verify
                     Visibility(
                       child: TextField(
 
@@ -176,56 +176,19 @@ class _RegisterState extends State<Register> {
                       
                     ),
                     
-                    //
-                   // SizedBox(
-                    //  height: 22,
-                    //),
+                    
                   ],
                 ),
               ),
               
-               //  SizedBox(
-               // height: 22,
-              //),
-
-              //SizedBox(
-                //width: double.infinity,
-                //child: ElevatedButton(
-                  //onPressed: () {
-                    //Navigator.of(context).push(
-                      //MaterialPageRoute(
-                        //builder: (context) =>Otp()
-                      //)
-                    //);
-                  //},
-                 // style: ButtonStyle(
-                    //foregroundColor: 
-                      //  MaterialStateProperty.all<Color>(Colors.white),
-                  //  backgroundColor:
-                      //  MaterialStateProperty.all<Color>(Colors.blue),
-                   // shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    //  RoundedRectangleBorder(
-                      //  borderRadius: BorderRadius.circular(24),
-                  //    ),
-                 //   ),
-                //  ),
-                //  child: Padding(
-                 //   padding: EdgeInsets.all(14),
-                 //   child: Text(
-                 //     'Send',
-                 //      style: TextStyle(fontSize: 16),
-                //   ),
-               // ),
-          //    ),
-           //   SizedBox(
-           //     height: 22,
-           //   ),
+               
             ],
           ),
         ),
       ),
     );
   }
+  //check phone number
    void loginWithPhone() async {
     auth.verifyPhoneNumber(
       phoneNumber: "+966" + phoneController.text,
@@ -236,6 +199,7 @@ class _RegisterState extends State<Register> {
       },
       verificationFailed: (FirebaseAuthException e) {
         print(e.message);
+        
       },
       codeSent: (String verificationId, int? resendToken) {
         otpVisibility = true;
@@ -245,11 +209,11 @@ class _RegisterState extends State<Register> {
       codeAutoRetrievalTimeout: (String verificationId) {},
     );
   }
-
+  //verify otp is true or not
   void verifyOTP() async {
     PhoneAuthCredential credential = PhoneAuthProvider.credential(
         verificationId: verificationID, smsCode: otpController.text);
-
+      
     await auth.signInWithCredential(credential).then(
       (value) {
         storeNewUser(auth.currentUser);
@@ -263,29 +227,37 @@ class _RegisterState extends State<Register> {
           textColor: Colors.white,
           fontSize: 16.0,
         );
-      },
-    ).whenComplete(
-      () {
-        Navigator.pushReplacement(
+         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => Profile1(),
-          ),
-        );
-      },
-    );
+          ),);
+      });
+      
+ 
   }
+  //store data to firebase
     storeNewUser(user) async {
      final User? user = auth.currentUser;
    final uid = user?.uid;
     var firebaseUser = await user;
     FirebaseFirestore.instance
-        .collection('users')
+        .collection('userinfo')
         .doc(firebaseUser?.uid)
         .set({'uid': user?.uid,'name': user?.displayName})
         .then((value) {})
         .catchError((e) {
           print(e);
+          Fluttertoast.showToast(
+          msg: "The code you entered is not correct",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.blue,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+
         });
   }
 }
